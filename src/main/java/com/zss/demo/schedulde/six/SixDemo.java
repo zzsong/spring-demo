@@ -1,5 +1,6 @@
 package com.zss.demo.schedulde.six;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -31,6 +32,16 @@ public class SixDemo   implements ApplicationListener<ContextRefreshedEvent> {
                         System.err.println(Thread.currentThread().getName()+"=====demo-2====>"+ LocalDateTime.now());
                     },new CronTrigger("*/3 * * * * ?")));}).start();
 
+            LocalDateTime dateTime = LocalDateTime.now().plusSeconds(10);
+            String cron = String.format("%d %d %d %d %d ? ",dateTime.getSecond(), dateTime.getMinute(), dateTime.getHour(), dateTime.getDayOfMonth(),dateTime.getMonth().getValue(),dateTime.getYear());
+
+            new Thread(()->{scheduleSixConfig.addTriggerTask("demo-once"
+                    ,new TriggerTask(()->{
+                        System.err.println(Thread.currentThread().getName()+"=====demo-once== 只调用一次==>"+ LocalDateTime.now());
+
+                        scheduleSixConfig.cancelTriggerTask("demo-once");
+                    },new CronTrigger(cron)));}).start();
+
             try {
                 TimeUnit.SECONDS.sleep(20);
             } catch (InterruptedException e) {
@@ -43,6 +54,7 @@ public class SixDemo   implements ApplicationListener<ContextRefreshedEvent> {
             new Thread(()->{scheduleSixConfig.resetTriggerTask("demo-1"
                     ,new TriggerTask(()->{
                         System.out.println(Thread.currentThread().getName()+"=====demo-4xxxx====>"+ LocalDateTime.now());
+                        System.out.println("==============当前任务================"+JSON.toJSONString(scheduleSixConfig.taskIds()));
                     },new CronTrigger("*/6 * * * * ?")));}).start();
 
         }
