@@ -36,6 +36,7 @@ public class ScheduleSixConfig implements SchedulingConfigurer {
             throw new SchedulingException("the taskId[" + taskId + "] was added.");
         }
         TaskScheduler taskScheduler = taskRegistrar.getScheduler();
+
         ScheduledFuture<?> future = taskScheduler.schedule(triggerTask.getRunnable(), triggerTask.getTrigger());
         taskFutures.put(taskId, future);
     }
