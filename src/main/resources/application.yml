@@ -6,4 +6,4 @@ spring:
 
 file:
   upload:
-    path:
+    path: F:\del

@@ -25,7 +25,7 @@ public class FileUploadController {
 
         System.out.println("fileName："+file.getOriginalFilename());
 
-        String path=uploadPath+file.getOriginalFilename();
+        String path=uploadPath+ File.separator + "upload1" + File.separator +file.getOriginalFilename();
 
         File newFile=new File(path);
         file.transferTo(newFile);
@@ -37,8 +37,8 @@ public class FileUploadController {
     @RequestMapping("upload2")
     public String  fileUpload2(String filename, int tradeDate, HttpServletRequest request) throws IOException {
         long  startTime=System.currentTimeMillis();
-
-        String file = uploadPath + File.pathSeparator + filename;
+        System.out.println(filename+" \t ===>>>"+tradeDate);
+        String file = uploadPath + File.separator + "upload2" + File.separator + filename;
         File destination = new File(file);
         if (!destination.getParentFile().exists()){
             FileUtils.forceMkdirParent(destination);
@@ -53,7 +53,7 @@ public class FileUploadController {
     public String  fileUpload3(UploadParam param) throws IOException {
         long  startTime=System.currentTimeMillis();
 
-        String file = uploadPath + File.pathSeparator + param.getFile().getOriginalFilename();
+        String file = uploadPath + File.separator + "upload3" + File.separator + param.getFile().getOriginalFilename();
         File destination = new File(file);
         if (!destination.getParentFile().exists()){
             FileUtils.forceMkdirParent(destination);
