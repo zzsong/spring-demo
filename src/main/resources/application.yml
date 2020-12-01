@@ -3,7 +3,11 @@ server:
 spring:
   profiles:
     active: pro
-
+  servlet:
+    multipart:
+      max-file-size: 10MB  #每个文件大小
+      max-request-size: 30MB  #请求上传文件总量
 file:
   upload:
-    path: F:\del
+    path: /Users/song/Desktop/test
+

@@ -5,14 +5,15 @@
     <title>Title</title>
 </head>
 <body>
+文件上传:<br/>
 <form action="/file/upload1" method="post" enctype="multipart/form-data">
     <input type="file" name="file"/>
-    <input name="tradeDate" value="20201201"/>
     <input type="submit" value="上传"/>
 </form>
 <br/>
 <form action="/file/upload2" method="post" enctype="multipart/form-data">
-    <input type="file" name="filename"/>
+    <input type="file" name="file"/>
+    <input name="filename" value="test_upload2.txt"/>
     <input name="tradeDate" value="20201201"/>
     <input type="submit" value="上传"/>
 </form>
@@ -23,6 +24,12 @@
     <input type="submit" value="上传"/>
 </form>
 <br/>
-
+<form action="/file/upload4" method="post" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <input type="file" name="file"/>
+    <input name="tradeDate" value="20201201"/>
+    <input type="submit" value="上传"/>
+</form>
+<br/>
 </body>
 </html>
