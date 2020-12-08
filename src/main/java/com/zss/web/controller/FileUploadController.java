@@ -2,21 +2,20 @@ package com.zss.web.controller;
 
 import com.zss.web.domain.MultiFileParam;
 import com.zss.web.domain.UploadParam;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("file")
@@ -38,27 +37,25 @@ public class FileUploadController {
         return "success:" + path;
     }
 
+    /**
+     * 把文件放入到body使用二进制流进行上传
+     * @param filename
+     * @param request
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
     @RequestMapping("upload2")
-    public String  fileUpload2(String filename, @RequestBody HttpServletRequest request) throws IOException, ServletException {
-        for (Enumeration<String> e = request.getHeaderNames(); e.hasMoreElements();){
-            System.out.println(e.nextElement());
+    public String  fileUpload2(String filename, HttpServletRequest request) throws IOException, ServletException {
+        File dir = new File(uploadPath);
+        if (!dir.exists()){
+            FileUtils.forceMkdir(dir);
         }
-
-        System.out.println("=======");
-
-        boolean filepart = ServletFileUpload.isMultipartContent(request);
-
-
-        String file = uploadPath + File.separator + "upload2" + File.separator + filename;
-        File destination = new File(file);
-        if (!destination.getParentFile().exists()){
-            FileUtils.forceMkdirParent(destination);
-        }
-        MultipartRequest multipartRequest;
-
-        FileUtils.copyInputStreamToFile(request.getInputStream(), destination);
-
-        return "success: "+ file;
+        String file = uploadPath + File.separator + "upload2" ;
+        String suffixFile = "."+FilenameUtils.getExtension(filename);
+        File tempFile = File.createTempFile(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) +"_",suffixFile,dir);
+        FileUtils.copyInputStreamToFile(request.getInputStream(), tempFile);
+        return "success: "+ tempFile.getAbsolutePath();
     }
 
     @RequestMapping("upload3")
