@@ -33,6 +33,22 @@ public class SpringClient {
 
     BeanFactory是Spring Bean 工厂最顶层的抽象
 
+     关于Spring Bean实例的注册流程：
+     1、定义spring配置文件
+     2、通过Resource对象将Spring配置文件进行抽象，抽象成一个具体的Resource对象（如ClassPathResource）；
+     3、定义好将要使用的bean工厂（各种bean工厂）
+     4、定义好XmlBeanDefinitionReader对象，并将工厂对象作为参数传递进去，从而构建好二者之间的关联关系。
+     5、通过XmlBeanDefinitionReader对象读取之前所抽象出的Resource对象。
+     6、流程开始进行解析。
+     7、针对XML文件进行各种元素以及元素属性的解析，这里面，真正的解析是通过BeanDefinitionParserDelegate对象来完成的（委托模式）
+     8、通过BeanDefinitionParserDelegate对象在解析文件时，又使用到了模板方法设计模式（pre , process, post）
+     9、当所有的bean标签元素都解析完毕后，开始定义一个BeanDefinition对象，该对象是一个非常重要的对象，里面容纳了一个Bean相关的所有属性
+     10、BeanDefinition对象创建完毕后，Spring又会创建一个BeanDefinitionHolder对象来持有这个BeanDefinition对象
+     11、BeanDefinitionHolder对象主要包含两部分内容：beanName  和 BeanDefinition
+     12、工厂会将解析出来的Bean信息存放到内部的一个ConcurrentHashMap中，该Map的key是beanName(唯一值)，value是BeanDefinition对象
+     13、调用Bean解析完毕的触发动作，从而触发相应的监听器的方法的执行。（使用到了观察者模式）
+
+
      */
 
     /*
@@ -53,9 +69,11 @@ name—工厂中bean的名称。注意，这个名称是工厂中使用的实际
      */
 
 
-    /**
+    /*
     environment： 表示当前运行时的环境。
      可以处理二件事： profiles and properties
+
+     bean的注入方式：1、使用set注入； 2、使用构造器注入（方法参数不易过多，容易使用出错）
 
      */
 
@@ -75,7 +93,7 @@ name—工厂中bean的名称。注意，这个名称是工厂中使用的实际
         BeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
         //进入解析、装配成bean、把bean放入工厂统一管理
-        /**
+        /*
         XmlBeanDefinitionReader 328： 解决A.xml import B.xml 同时在B.xml文件中import A.xml 循环加载
         if (!currentResources.add(encodedResource)) {
 			throw new BeanDefinitionStoreException(
@@ -83,23 +101,31 @@ name—工厂中bean的名称。注意，这个名称是工厂中使用的实际
 		}
 
          ThreadLocal： 内部是使用弱引用，用完后必需remove(),不然可能会导致内存泄漏。
+
+
+         AbstractBeanDefinition:
+         @Nullable
+         private volatile Object beanClass; //代表二层含义：1、class对象， 2、能够实例化的bean的字符串表示。 显示使用Object属性。
+
          */
-        /**
+        /*
          * xml两种解析方式： SAX 、DOM
          * DOM： 将整个XML文件读取到内存当中，在内存中构建整个的XML 树型结构（节点、节点属性等），占内存。文档驱动
          *
          * SAX： 以流的方式对XML进行读取。遇到标签即进行解析。事件驱动
 
          */
-        beanDefinitionReader.loadBeanDefinitions(resource);
+        beanDefinitionReader.loadBeanDefinitions(resource);//执行完到此，XML中的Bean并没有被实例化。
 
         //第二阶段：从bean工厂加载、获取bean
         //使用String参数，必需指定ID或name，否则异常：
         //NoSuchBeanDefinitionException: No bean named 'student' available
-//        Student stu = (Student) beanFactory.getBean("student");
-//        System.out.println("name:"+stu.getName()+" \t age:"+stu.getAge());
+        //name指定必需唯一（与ID一样作用）
+        //id / name如果没有指定，则使用默认的className拼上# 再接计数器（计数从0开始）
+        Student stu = (Student) beanFactory.getBean("com.zss.kernel.spring.bean.Student#1");
+        System.out.println("name:"+stu.getName()+" \t age:"+stu.getAge());
         //这样写法有其风险，如果出现重复beanName会抛异常出现
-        Student student = beanFactory.getBean(Student.class);
-        System.out.println("name:"+student.getName()+" \t age:"+student.getAge());
+//        Student student = beanFactory.getBean(Student.class);
+//        System.out.println("name:"+student.getName()+" \t age:"+student.getAge());
     }
 }

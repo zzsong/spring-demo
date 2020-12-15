@@ -8,4 +8,9 @@
         <property name="name" value="zhanshan"/>
         <property name="age" value="20"/>
     </bean>
+
+    <bean class="com.zss.kernel.spring.bean.Student">
+        <property name="name" value="admin"/>
+        <property name="age" value="30"/>
+    </bean>
 </beans>
