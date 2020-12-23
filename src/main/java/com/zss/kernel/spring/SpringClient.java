@@ -34,6 +34,7 @@ public class SpringClient {
     BeanFactory是Spring Bean 工厂最顶层的抽象
 
      关于Spring Bean实例的注册流程：
+
      1、定义spring配置文件
      2、通过Resource对象将Spring配置文件进行抽象，抽象成一个具体的Resource对象（如ClassPathResource）；
      3、定义好将要使用的bean工厂（各种bean工厂）
@@ -47,6 +48,21 @@ public class SpringClient {
      11、BeanDefinitionHolder对象主要包含两部分内容：beanName  和 BeanDefinition
      12、工厂会将解析出来的Bean信息存放到内部的一个ConcurrentHashMap中，该Map的key是beanName(唯一值)，value是BeanDefinition对象
      13、调用Bean解析完毕的触发动作，从而触发相应的监听器的方法的执行。（使用到了观察者模式）
+
+
+     关于Spring Bean的创建流程：
+     1、Spring所管理的Bean 实际上是缓存在一个ConcurrentHashMap中的（singletonObject对象中）。
+     2、该对象本质上是一个key-value对的形式，key: bean的名字（id）,value：是一个Object对象，就是所创建的bean对象。
+     3、在创建Bean之前，首先需要将将该Bean的创建标识指定好，表示该Bean已经或是即将被创建，目的是增强缓存的效率。
+     4、根据Bean的Scope属性来确定当前这个Bean是一个singleton还是一个prototype的Bean，然后创建相应的对象。
+     5、无论singleton还是prototype的Bean，其创建的过程是一致的。
+     6、通过Java反射机制来创建Bean的实例，在创建之前需要检查构造方法的访问修饰符，如果不是public的，则会调用setAccessible(true)
+        方法来突破Java的语法限制，使得可以通过非public构造方法来完成对象实例的创建。
+     7、当对象创建完毕后，开始进行对象属性的注入。（按XML顺序进行载入）
+     8、在对象属性注入的过程中，Spring除去使用之前通过BeanDefinition对象获取的Bean信息外，还会通过反射的方式获取到上面所创建的Bean中的
+        真实属性信息（还包括一个class属性，表示该Bean所对应的Class类型）
+     9、完成Bean属性的注入（或抛出异常）
+     10、如果Bean是一个单例的，那么将所创建出来的Bean添加到singletonObject对象中（即缓存中），供程序后续再次使用。
 
 
      */
@@ -76,9 +92,13 @@ name—工厂中bean的名称。注意，这个名称是工厂中使用的实际
      bean的注入方式：1、使用set注入； 2、使用构造器注入（方法参数不易过多，容易使用出错）
 
      */
+    /*
+    singleton、 prototype    创建对象的流程是一致，只有是否放于缓存中的区别。
+     */
 
     public static void main(String[] args) {
         //第一阶段：bean的解析和工厂装配
+        //有什么信息就解析什么信息，不会去校验信息的合法性。解析过程，没有对象创建出来。
         //资源（指定的类路径下的，指定XML，指定文件系统当中等（properties\yml\xml\....） 统称为资源）
         /*
         使用 ClassLoader 加载

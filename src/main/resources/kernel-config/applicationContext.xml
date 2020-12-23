@@ -4,12 +4,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="com.zss.kernel.spring.bean.Student">
+    <bean class="com.zss.kernel.spring.bean.Student" scope="single">
         <property name="name" value="zhanshan"/>
         <property name="age" value="20"/>
     </bean>
 
     <bean class="com.zss.kernel.spring.bean.Student">
+        <property name="name2" value="admin---2"/>
         <property name="name" value="admin"/>
         <property name="age" value="30"/>
     </bean>
