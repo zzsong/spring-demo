@@ -9,5 +9,5 @@ spring:
       max-request-size: 30MB  #请求上传文件总量
 file:
   upload:
-    path: /Users/song/Desktop/test
+    path: F:\del\demo  #/Users/song/Desktop/test
 

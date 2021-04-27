@@ -7,7 +7,13 @@ import com.zss.demo.one.service.OrderService;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
+@Component
+@Service
+@Controller
 public class OneTest {
 
     public static void main(String[] args) {
