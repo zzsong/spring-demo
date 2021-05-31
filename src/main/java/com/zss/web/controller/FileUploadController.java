@@ -7,6 +7,7 @@ import com.zss.web.domain.UploadParam;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,27 +56,6 @@ public class FileUploadController {
         }
         String file = uploadPath + File.separator + "upload2" ;
         String suffixFile = "."+FilenameUtils.getExtension(filename);
-        File tempFile = File.createTempFile(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) +"_",suffixFile,dir);
-        FileUtils.copyInputStreamToFile(request.getInputStream(), tempFile);
-        return "success: "+ tempFile.getAbsolutePath();
-    }
-    /**
-     * 把文件放入到body使用二进制流进行上传
-     * @param
-     * @param request
-     * @return
-     * @throws IOException
-     * @throws ServletException
-     */
-    @RequestMapping("upload2-1")
-    public String  fileUpload2StreamParam(StreamParam streamParam, HttpServletRequest request) throws IOException, ServletException {
-        File dir = new File(uploadPath);
-        if (!dir.exists()){
-            FileUtils.forceMkdir(dir);
-        }
-        System.out.println(JSON.toJSONString(streamParam));
-        String file = uploadPath + File.separator + "upload2" ;
-        String suffixFile = "."+FilenameUtils.getExtension(streamParam.getFilename());
         File tempFile = File.createTempFile(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) +"_",suffixFile,dir);
         FileUtils.copyInputStreamToFile(request.getInputStream(), tempFile);
         return "success: "+ tempFile.getAbsolutePath();

@@ -2,7 +2,7 @@ package com.zss.web.domain;
 
 import java.util.List;
 
-public class StreamParam {
+public class StreamParam extends AuthParam {
 
     private String filename;
     private List<Integer> category;
