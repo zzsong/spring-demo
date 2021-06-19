@@ -6,10 +6,13 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class LocalDateStringConverter implements Converter<LocalDate> {
 
@@ -28,9 +31,11 @@ public class LocalDateStringConverter implements Converter<LocalDate> {
         if (cellData.getNumberValue()==null || BigDecimal.ZERO.compareTo(cellData.getNumberValue())>=0){
             return null;
         }
-        String format = cellData.getDataFormatString().replace("\\","");
-        System.out.println("format:\t"+format);
-        return LocalDate.parse(cellData.getStringValue(),DateTimeFormatter.ofPattern(format));
+        //日期转换成数值
+        Date date = HSSFDateUtil.getJavaDate(cellData.getNumberValue().doubleValue());
+        return date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     @Override
