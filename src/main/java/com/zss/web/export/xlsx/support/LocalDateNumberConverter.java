@@ -5,7 +5,9 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -23,7 +25,11 @@ public class LocalDateNumberConverter implements Converter<LocalDate> {
 
     @Override
     public LocalDate convertToJavaData(CellData cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) throws Exception {
-        return LocalDate.parse(cellData.getStringValue(),DateTimeFormatter.BASIC_ISO_DATE);
+        if (cellData.getNumberValue()==null || BigDecimal.ZERO.compareTo(cellData.getNumberValue())>=0){
+            return null;
+        }
+        //处理科学记数法
+        return LocalDate.parse(cellData.getNumberValue().toPlainString(),DateTimeFormatter.BASIC_ISO_DATE);
     }
 
     @Override

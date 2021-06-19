@@ -1,6 +1,7 @@
 package com.zss.web.export.xlsx;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.zss.web.export.xlsx.support.LocalDateNumberConverter;
 import com.zss.web.export.xlsx.support.LocalDateStringConverter;
 
@@ -12,16 +13,19 @@ public class BookDO {
     @ExcelProperty(index = 0,value = "名称")
     private String name;
 
-    @ExcelProperty(index = 2,value = "日期",converter = LocalDateNumberConverter.class)
+    @ExcelProperty(index = 1,value = "日期",converter = LocalDateNumberConverter.class)
     private LocalDate date;
-    @ExcelProperty(index = 4,value = "发行日期",converter = LocalDateStringConverter.class)
+
+    @ExcelProperty(index = 2,value = "价格")
+    private double price;
+
+    @DateTimeFormat(value="yyyy-mm-dd")
+    @ExcelProperty(index = 3,value = "发行日期",converter = LocalDateStringConverter.class)
     private LocalDate issueDate;
 
-    @ExcelProperty(index = 1,value = "金额")
+    @ExcelProperty(index = 4,value = "金额")
     private BigDecimal amount;
 
-    @ExcelProperty(index = 3,value = "价格")
-    private double price;
 
     public String getName() {
         return name;
