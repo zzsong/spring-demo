@@ -1,6 +1,9 @@
 package com.zss.web.export.csv;
 
+import com.alibaba.fastjson.JSON;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
@@ -8,9 +11,12 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.time.LocalDate;
@@ -153,21 +159,31 @@ public class CsvController {
 
 
         String[] titles = {"名称","颜色","标签"};
-        String[] items1 = {"book", "read", "pencil"};
-        String[] items2 = {"pen", "yellow", "lamp"};
-        String[] items3 = {"ball", "黑色", "spectacles"};
+//        String[] items1 = {"book", "read,", "pencil"};
+//        String[] items2 = {"pen", "yellow", "lamp"};
+//        String[] items3 = {"ball", "黑色", "spectacles"};
 
         List<String[]> contentList = new ArrayList<>();
-        contentList.add(items1);
-        contentList.add(items2);
-        contentList.add(items3);
+        IntStream.range(1,10).forEach(i->{
+            String[] item = {"book书"+i, "红色,red", "pencil"+i};
+            contentList.add(item);
+        });
 
         CSVWriter writer = new CSVWriter(response.getWriter());
 
         writer.writeNext(titles);
 
         writer.writeAll(contentList);
+    }
 
+    @RequestMapping("upload")
+    public void upload(MultipartFile file) throws IOException {
+
+        Reader reader2 = new InputStreamReader(file.getInputStream(), "UTF-8");
+        CsvToBean<OrderDO> csvToBean = new CsvToBeanBuilder<OrderDO>(reader2)
+                .withType(OrderDO.class)
+                .build();
+        csvToBean.parse().forEach(orderDO -> System.out.println(JSON.toJSONString(orderDO)));
     }
 
 
@@ -177,7 +193,7 @@ public class CsvController {
         IntStream.range(1,10).forEach(i->{
             OrderDO order = new OrderDO();
             order.setId(i);
-            order.setOrderNo("NO00"+i);
+            order.setOrderNo("NO000"+i);
             order.setOccurDate(LocalDate.now().plus(i, ChronoUnit.DAYS));
             order.setOrderTime(LocalDateTime.now().plusHours(i));
             order.setAmount(BigDecimal.valueOf(25.56).add(BigDecimal.valueOf(i)));
