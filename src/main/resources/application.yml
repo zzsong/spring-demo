@@ -11,3 +11,6 @@ file:
   upload:
     path: F:\del\demo  #/Users/song/Desktop/test
 
+fruit:
+  service:
+    name: waterMelonServiceIml
