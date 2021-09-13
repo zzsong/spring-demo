@@ -3,6 +3,7 @@ package com.zss.transaction.manager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
@@ -12,6 +13,9 @@ public class TransactionExampleManager {
 
     @Autowired
     private WalletManager walletManager;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     /**
      *
@@ -40,5 +44,13 @@ public class TransactionExampleManager {
         BigDecimal amount = BigDecimal.valueOf(20);
         walletManager.add(1,amount,false);
         walletManager.subtract(2,amount,true);
+    }
+
+    public void example3(){
+
+        transactionTemplate.execute((status -> {
+
+            return null;
+        }));
     }
 }
