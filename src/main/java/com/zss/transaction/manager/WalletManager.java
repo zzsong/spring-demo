@@ -19,6 +19,10 @@ public class WalletManager {
         return walletDao.query(id);
     }
 
+    public Wallet queryById(long id){
+        return walletDao.queryById(id);
+    }
+
     public void add(long id, BigDecimal money, boolean ex){
         Wallet wallet = walletDao.query(id);
         wallet.setMoney(wallet.getMoney().add(money));

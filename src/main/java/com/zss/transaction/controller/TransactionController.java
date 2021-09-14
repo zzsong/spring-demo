@@ -15,11 +15,12 @@ public class TransactionController {
     private TransactionExampleManager transactionExampleManager;
 
     @RequestMapping("example/{version}")
-    public String example(@PathVariable("version") int version){
+    public String example(@PathVariable("version") int version, int id){
 
         switch (version){
             case 1: transactionExampleManager.example1();break;
             case 2: transactionExampleManager.example2();break;
+            case 3: transactionExampleManager.example3(id);break;
         }
         System.out.println("-=================normal finish-=====");
         return LocalDateTime.now().toString();
