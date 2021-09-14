@@ -3,14 +3,16 @@ package com.zss.transaction.manager;
 import com.alibaba.fastjson.JSON;
 import com.zss.result.ModelResult;
 import com.zss.transaction.domain.Wallet;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 @Component
@@ -22,9 +24,10 @@ public class TransactionExampleManager {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
-    /**
-     *
-     */
+    @Autowired
+    private DataSourceTransactionManager transactionManager;
+
+
     @Transactional
     public void example1(){
         BigDecimal amount = BigDecimal.valueOf(20);
@@ -81,11 +84,22 @@ public class TransactionExampleManager {
             } catch (Exception exception){
                 mr.withError(exception.getMessage(), ExceptionUtils.getMessage(exception));
             }
-
-
-
             return mr;
         }));
         System.out.println(JSON.toJSONString(modelResult));
+    }
+
+    public void example4(){
+
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus transactionStatus = transactionManager.getTransaction(definition);
+
+        try {
+
+            transactionManager.commit(transactionStatus);
+        } catch (Exception ex){
+            transactionManager.rollback(transactionStatus);
+        }
     }
 }
