@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("file")
@@ -60,6 +63,19 @@ public class FileUploadController {
         FileUtils.copyInputStreamToFile(request.getInputStream(), tempFile);
         return "success: "+ tempFile.getAbsolutePath();
     }
+    @RequestMapping("upload2-1")
+    public String  fileUpload2_1(@RequestBody StreamParam param, HttpServletRequest request) throws IOException, ServletException {
+        System.out.println(JSON.toJSONString(param));
+        File dir = new File(uploadPath);
+        if (!dir.exists()){
+            FileUtils.forceMkdir(dir);
+        }
+        String file = uploadPath + File.separator + "upload2-1/" ;
+        String suffixFile = "."+FilenameUtils.getExtension(param.getFilename());
+        File tempFile = File.createTempFile(file+LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) +"_",suffixFile,dir);
+        FileUtils.copyInputStreamToFile(request.getInputStream(), tempFile);
+        return "success: "+ tempFile.getAbsolutePath();
+    }
 
     @RequestMapping("upload3")
     public String  fileUpload3(UploadParam param) throws IOException {
@@ -90,6 +106,12 @@ public class FileUploadController {
         });
 
         return "success: " + file;
+    }
+
+    public static void main(String[] args) {
+        String suffix = LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
+        String str = Stream.of("d:/test","123012","/",suffix,".","csv").collect(Collectors.joining());
+        System.out.println(str);
     }
 
 }
