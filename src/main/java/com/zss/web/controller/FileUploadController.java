@@ -64,7 +64,7 @@ public class FileUploadController {
         return "success: "+ tempFile.getAbsolutePath();
     }
     @RequestMapping("upload2-1")
-    public String  fileUpload2_1(@RequestBody StreamParam param, HttpServletRequest request) throws IOException, ServletException {
+    public String  fileUpload2_1(StreamParam param, HttpServletRequest request) throws IOException, ServletException {
         System.out.println(JSON.toJSONString(param));
         File dir = new File(uploadPath);
         if (!dir.exists()){
