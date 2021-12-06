@@ -17,3 +17,6 @@ fruit:
 logging:
   level:
     org.springframework.jdbc: DEBUG
+
+storage:
+  type: aws
