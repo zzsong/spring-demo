@@ -20,6 +20,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
  *
  * BeanFactoryPostProcessor对 bean 配置元数据进行操作。也就是说，Spring IoC 容器允许BeanFactoryPostProcessor读取配置元数据并在容器实例化除实例以外的任何 bean之前可能更改它。
  *
+ * BeanFactoryPostProcessor是针对于bean容器的，在调用它时，BeanFactory只加载了bean的定义，还没有对它们进行实例化
  *
  */
 public class CustomBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
